@@ -17,3 +17,6 @@ if (!JFactory::getUser()->authorise('core.manage', 'com_modules'))
 $controller	= JControllerLegacy::getInstance('Modules');
 $controller->execute(JFactory::getApplication()->input->get('task'));
 $controller->redirect();
+
+
+// Test comment
