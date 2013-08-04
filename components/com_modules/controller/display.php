@@ -10,13 +10,25 @@
 defined('_JEXEC') or die('Restricted access');
 
 /**
+ <?php 
+/**
+ * @package     Joomla.Site
+ * @subpackage  com_services
+ *
+ * @copyright   Copyright (C) 2005 - 2013 Open Source Matters, Inc. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ */
+
+defined('_JEXEC') or die('Restricted access');
+
+/**
  * Display Controller for global configuration
  *
  * @package     Joomla.Site
  * @subpackage  com_services
  * @since       3.2
 */
-class ServicesControllerConfigDisplay extends JControllerBase
+class ModulesControllerDisplay extends JControllerBase
 {
 	/**
 	 * Method to display global configuration.
@@ -34,33 +46,39 @@ class ServicesControllerConfigDisplay extends JControllerBase
 		// Get the document object.
 		$document     = JFactory::getDocument();
 
-		$viewName     = $app->input->getWord('view', 'config');
+		$viewName     = $app->input->getWord('view', 'templates');
 		$viewFormat   = $document->getType();
 		$layoutName   = $app->input->getWord('layout', 'default');
 
 		$app->input->set('view', $viewName);
 
-		// Access back-end com_config
-		JLoader::registerPrefix('Config', JPATH_ADMINISTRATOR . '/components/com_config');
-		$displayClass = new ConfigControllerApplicationDisplay;
+		// Access back-end com_module
+		JLoader::register('ModulesController', JPATH_ADMINISTRATOR . '/components/com_modules/controller.php');
+		//JLoader::register('TemplatesViewStyle', JPATH_ADMINISTRATOR . '/components/com_templates/views/style/view.json.php');
+		JLoader::register('ModulesModelStyle', JPATH_ADMINISTRATOR . '/components/com_modules/models/ModulesModelModule.php');
 
-		// Set back-end required params
+		$displayClass = new ModulesController;
+
+		// Get the parameters of the module with Id =1
 		$document->setType('json');
-		$app->input->set('view', 'application');
+		$app->input->set('id', $app->getTemplate(1));
 
 		// Execute back-end controller
-		$serviceData = json_decode($displayClass->execute(), true);
+		$serviceData = json_decode($displayClass->display(), true);
+
 
 		// Reset params back after requesting from service
 		$document->setType('html');
 		$app->input->set('view', $viewName);
 
+
 		// Register the layout paths for the view
 		$paths = new SplPriorityQueue;
-		$paths->insert(JPATH_COMPONENT . '/view/' . 'config' . '/tmpl', 'normal');
+		$paths->insert(JPATH_COMPONENT . '/view/tmpl', 'normal');
+		
 
-		$viewClass  = 'ServicesView' . ucfirst($viewName) . ucfirst($viewFormat);
-		$modelClass = 'ServicesModel' . ucfirst($viewName);
+		$viewClass  = 'ModulesView' . ucfirst($viewFormat);
+		$modelClass = 'ModulesModel' . ucfirst($viewName);
 
 		if (class_exists($viewClass))
 		{
@@ -70,7 +88,7 @@ class ServicesControllerConfigDisplay extends JControllerBase
 				$model = new $modelClass;
 
 				// Access check.
-				if (!JFactory::getUser()->authorise('core.admin', $model->getState('component.option')))
+ 				if (!JFactory::getUser()->authorise('core.admin', $model->getState('component.option')))
 				{
 					$app->enqueueMessage(JText::_('JERROR_ALERTNOAUTHOR'), 'error');
 
@@ -94,9 +112,8 @@ class ServicesControllerConfigDisplay extends JControllerBase
 				$form->bind($serviceData);
 			}
 
-			// Set form and data to the view
+			// Set form and data to the view			
 			$view->form = &$form;
-			$view->data = &$serviceData;
 
 			// Render view.
 			echo $view->render();

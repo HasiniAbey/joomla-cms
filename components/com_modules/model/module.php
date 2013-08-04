@@ -16,7 +16,7 @@ defined('_JEXEC') or die;
  * @subpackage  com_modules
  * @since       1.6
  */
-class ModulesModelModule extends JModel
+class ModulesModelModule extends JModelCmsform
 {
 	/**
 	 * @var    string  The prefix to use with controller messages.
