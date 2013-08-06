@@ -30,6 +30,7 @@ $controller = $app->input->get('controller');
 if (empty($controller))
 {
 	$activity = 'display';
+	
 }
 elseif ($controller == 'apply')
 {
@@ -45,6 +46,7 @@ else
 
 	// For Config
 	$classname  = 'ModulesController' . ucfirst($activity);
+	
 	
 if(!class_exists($classname))
 {

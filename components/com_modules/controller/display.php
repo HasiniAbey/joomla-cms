@@ -1,19 +1,7 @@
 <?php 
 /**
  * @package     Joomla.Site
- * @subpackage  com_services
- *
- * @copyright   Copyright (C) 2005 - 2013 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
- */
-
-defined('_JEXEC') or die('Restricted access');
-
-/**
- <?php 
-/**
- * @package     Joomla.Site
- * @subpackage  com_services
+ * @subpackage  com_modules
  *
  * @copyright   Copyright (C) 2005 - 2013 Open Source Matters, Inc. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
@@ -46,7 +34,7 @@ class ModulesControllerDisplay extends JControllerBase
 		// Get the document object.
 		$document     = JFactory::getDocument();
 
-		$viewName     = $app->input->getWord('view', 'templates');
+		$viewName     = $app->input->getWord('view', 'module');
 		$viewFormat   = $document->getType();
 		$layoutName   = $app->input->getWord('layout', 'default');
 
@@ -54,18 +42,19 @@ class ModulesControllerDisplay extends JControllerBase
 
 		// Access back-end com_module
 		JLoader::register('ModulesController', JPATH_ADMINISTRATOR . '/components/com_modules/controller.php');
-		//JLoader::register('TemplatesViewStyle', JPATH_ADMINISTRATOR . '/components/com_templates/views/style/view.json.php');
-		JLoader::register('ModulesModelStyle', JPATH_ADMINISTRATOR . '/components/com_modules/models/ModulesModelModule.php');
+		JLoader::register('ModulesViewModule', JPATH_ADMINISTRATOR . '/components/com_modules/views/module/view.json.php');
+		JLoader::register('ModulesModelModule', JPATH_ADMINISTRATOR . '/components/com_modules/models/module.php');
 
 		$displayClass = new ModulesController;
 
 		// Get the parameters of the module with Id =1
 		$document->setType('json');
-		$app->input->set('id', $app->getTemplate(1));
+		$app->input->set('id', '1');
 
 		// Execute back-end controller
+// 		$displayClass->display();
 		$serviceData = json_decode($displayClass->display(), true);
-
+		
 
 		// Reset params back after requesting from service
 		$document->setType('html');
@@ -97,7 +86,7 @@ class ModulesControllerDisplay extends JControllerBase
 				}
 
 			}
-
+// 			print_r($model);print_r('ererer');
 			$view = new $viewClass($model, $paths);
 
 			$view->setLayout($layoutName);
