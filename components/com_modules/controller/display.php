@@ -66,8 +66,12 @@ class ModulesControllerDisplay extends JControllerBase
 		$paths->insert(JPATH_COMPONENT . '/view/tmpl', 'normal');
 		
 
-		$viewClass  = 'ModulesView' . ucfirst($viewFormat);
-		$modelClass = 'ModulesModel' . ucfirst($viewName);
+		//$viewClass  = 'ModulesView' . ucfirst($viewFormat);
+		//$modelClass = 'ModulesModel' . ucfirst($viewName);
+		
+		
+		$viewClass  = 'ServicesView' . ucfirst($viewFormat);
+		$modelClass = 'ServicesModel' . ucfirst($viewName);
 
 		if (class_exists($viewClass))
 		{
