@@ -12,7 +12,7 @@ defined('_JEXEC') or die('Restricted access');
  * Save Controller for global configuration
  *
  * @package     Joomla.Site
- * @subpackage  com_services
+ * @subpackage  com_modules
  * @since       3.2
 */
 class ModulesControllerSave extends JControllerBase
