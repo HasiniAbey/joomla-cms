@@ -24,6 +24,10 @@ $app = JFactory::getApplication();
 
 $controller = $app->input->get('controller');
 
+if(empty($controller))
+{
+	$controller = $app->input->get('task');
+}
 
 
 // Get the controller name
@@ -41,13 +45,10 @@ else
 	$activity = $controller;
 }
 
-// Create the controller
-//if ($array[0] == 'config')
 
-	// For Config
-	$classname  = 'ModulesController' . ucfirst($activity);
-	
-	
+$classname  = 'ModulesController' . ucfirst($activity);
+
+
 if(!class_exists($classname))
 {
 	$app->enqueueMessage(JText::_('COM_MODULES_ERROR_CONTROLLER_NOT_FOUND'), 'error');

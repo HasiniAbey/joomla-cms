@@ -12,7 +12,7 @@ defined('_JEXEC') or die('Restricted access');
  * Save Controller for global configuration
  *
  * @package     Joomla.Site
- * @subpackage  com_modules
+ * @subpackage  com_services
  * @since       3.2
 */
 class ModulesControllerSave extends JControllerBase
@@ -41,57 +41,41 @@ class ModulesControllerSave extends JControllerBase
 		JClientHelper::setCredentialsFromRequest('ftp');
 
 		$app   = JFactory::getApplication();
-		$model = new ServicesModelConfig;
-		$form  = $model->getForm();
-		$data  = $this->input->post->get('jform', array(), 'array');
-
-		// Validate the posted data.
-		$return = $model->validate($form, $data);
-
-		// Check for validation errors.
-		if ($return === false)
-		{
-			// Get the validation messages.
-			$errors	= $model->getErrors();
-
-			// Push up to three validation messages out to the user.
-			for ($i = 0, $n = count($errors); $i < $n && $i < 3; $i++)
-			{
-				if ($errors[$i] instanceof Exception)
-				{
-					$app->enqueueMessage($errors[$i]->getMessage(), 'warning');
-				}
-				else
-				{
-					$app->enqueueMessage($errors[$i], 'warning');
-				}
-			}
-
-			// Save the data in the session.
-			$app->setUserState('com_modules.config.global.data', $data);
-
-			// Redirect back to the edit screen.
-			$app->redirect(JRoute::_('index.php?option=com_modules', false));
-
-			return false;
-		}
-
-		// Attempt to save the configuration.
-		$data	= $return;
+// 		$data  = $this->input->post->get('jform', array(), 'array');
 
 		// Access back-end com_modules to be done
+		JLoader::register('ModulesControllerModule', JPATH_ADMINISTRATOR . '/components/com_modules/controllers/module.php');
+		JLoader::register('ModulesModelModule', JPATH_ADMINISTRATOR . '/components/com_modules/models/module.php');
+// 		JLoader::register('ModulesTableModule', JPATH_ADMINISTRATOR . '/components/com_templates/tables/style.php');
+		$controllerClass = new ModulesControllerModule;
+
+		// Get a document object
+		$document = JFactory::getDocument();
+
+		// Set back-end required params
+		$document->setType('json');
+// 		$this->input->set('id',$app->input->getInt('id') );//** Set Id of module **//
 		
+// 		print_r($this->input->get('id'));
+		
+
+		// Execute back-end controller
+		$return = $controllerClass->save();
+
+		// Reset params back after requesting from service
+		$document->setType('html');
+
 
 		// Check the return value.
 		if ($return === false)
 		{
 			// Save the data in the session.
-			$app->setUserState('com_modules.config.global.data', $data);
+// 			$app->setUserState('com_modules.config.global.data', $data);
 
 			// Save failed, go back to the screen and display a notice.
-			$message = JText::sprintf('JERROR_SAVE_FAILED', $model->getError());
+			$message = JText::sprintf('JERROR_SAVE_FAILED');
 
-			$app->redirect(JRoute::_('index.php?option=com_modules=config', false), $message, 'error');
+			$app->redirect(JRoute::_('index.php?option=com_modules&controller=display', false), $message, 'error');
 
 			return false;
 		}
@@ -100,7 +84,7 @@ class ModulesControllerSave extends JControllerBase
 		$message = JText::_('COM_MODULES_SAVE_SUCCESS');
 
 		// Redirect back to com_services display
-		$app->redirect(JRoute::_('index.php?option=com_modules=config', false), $message);
+		$app->redirect(JRoute::_('index.php?option=com_modules&controller=display', false), $message);
 
 		return true;
 	}

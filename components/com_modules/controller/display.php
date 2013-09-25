@@ -13,7 +13,7 @@ defined('_JEXEC') or die('Restricted access');
  * Display Controller for global configuration
  *
  * @package     Joomla.Site
- * @subpackage  com_modules
+ * @subpackage  com_services
  * @since       3.2
 */
 class ModulesControllerDisplay extends JControllerBase
@@ -49,7 +49,7 @@ class ModulesControllerDisplay extends JControllerBase
 
 		// Get the parameters of the module with Id =1
 		$document->setType('json');
-		$app->input->set('id', '1'); // *** IMPORTANT: somehow you need to set 'id' here ***
+		$app->input->set('id', '16'); // *** IMPORTANT: somehow you need to set 'id' here ***
 
 		// Execute back-end controller
 		$serviceData = json_decode($displayClass->display(), true);
@@ -111,7 +111,8 @@ class ModulesControllerDisplay extends JControllerBase
 
 			// Set form and data to the view
 			$view->form = &$form;
-				
+			$view->currentModelId = $serviceData['id']; // Alternative solution used here
+
 			// Render view.
 			echo $view->render();
 		}
